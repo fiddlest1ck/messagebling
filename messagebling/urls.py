@@ -17,10 +17,11 @@ from django.contrib import admin
 from django.contrib.auth import views as auth_views
 from django.urls import path
 
-from app.views import HomeView
+from app.views import HomeView, InboxView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('login/', auth_views.LoginView.as_view(template_name='authentication/login.html'), name='login'),
-    path('home/', HomeView.as_view(), name='home')
+    path('inbox/', InboxView.as_view(), name='inbox'),
+    path('', HomeView.as_view(), name='home')
 ]
