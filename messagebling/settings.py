@@ -33,6 +33,7 @@ ALLOWED_HOSTS = []
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
+    'app',
     'messagebling',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
@@ -107,6 +108,10 @@ AUTH_PASSWORD_VALIDATORS = [
 
 # Internationalization
 # https://docs.djangoproject.com/en/2.0/topics/i18n/
+
+LOGIN_REDIRECT_URL = '/home'
+
+LOGIN_URL = '/login'
 
 LANGUAGE_CODE = 'en-us'
 
