@@ -17,11 +17,13 @@ from django.contrib import admin
 from django.contrib.auth import views as auth_views
 from django.urls import path
 
-from app.views import HomeView, InboxView
+from app.views import HomeView, InboxView, MessageView, MessageFormView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('login/', auth_views.LoginView.as_view(template_name='authentication/login.html'), name='login'),
     path('inbox/', InboxView.as_view(), name='inbox'),
+    path('inbox/messages/', MessageFormView.as_view(), name='messageform'),
+    path('inbox/messages/<int:pk>' , MessageView.as_view(), name='message'),
     path('', HomeView.as_view(), name='home')
 ]
