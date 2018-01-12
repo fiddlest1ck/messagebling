@@ -1,0 +1,10 @@
+<table class="table">
+        {% for message in messages %}
+            <tbody>
+                <tr>
+                    <td><a href={% url 'message' pk=message.pk %}>{{ message.subject }}</a></td>
+                    <td><a href={% url 'message' pk=message.pk %}>{{ message.date_created}}</a></td>
+                </tr>
+            </tbody>
+        {% endfor %}
+    </table>

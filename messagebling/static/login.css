@@ -1,0 +1,32 @@
+html
+body {
+    height:100%
+}
+
+input {
+    margin: 7px 0;
+}
+
+.absolute-center {
+    width: 50%; 
+    height: 50%;
+    min-width: 200px;
+    max-width: 400px;
+    padding: 40px;
+    position: absolute;
+    margin: auto;
+    top: 0; left: 0; bottom: 0; right: 0;
+}
+
+.login-button-margin {
+    margin: 20px 0;
+}
+
+.form-signin {
+    max-width: 360px;
+    margin: 0 auto;
+}
+.vertical-center-row {
+    display: table-cell;
+    vertical-align: middle;
+}

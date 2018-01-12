@@ -1,0 +1,34 @@
+{% extends 'base.html' %}
+{% block content %}
+<form method='post', action='/inbox/messages/'>
+    {% csrf_token %}
+    <form>
+        <div class="form-group row">
+            <label for="subject" class="col-sm-2 col-form-label">Temat</label>
+            <div class="col-sm-10">
+                <input type="text" name='subject' class="form-control" id="subject" placeholder="Temat">
+            </div>
+        </div>
+        <div class="form-group row">
+            <label for="receivers" class="col-sm-2 col-form-label">Odbiorcy</label>
+            <div class="col-sm-10">
+                <select name='recivers' class="form-control" id="receivers">
+                    {% for user in form.recivers %}
+                    <option>{{ user }} </option>
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+        <div class="form-group row">
+            <label for="body" class="col-sm-2 col-form-label">Treść</label>
+            <div class="col-sm-10">
+                <input type="textarea" name='body' class="form-control" id="body" placeholder="Treść">
+            </div>
+        </div>
+        <div class="form-group row">
+            <div class="col-sm-10">
+                <button type="submit" class="btn btn-primary">Sign in</button>
+            </div>
+        </div>
+    </form>
+{% endblock %}
