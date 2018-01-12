@@ -14,7 +14,6 @@ class HomeView(LoginRequiredMixin, TemplateView):
 
 class MessageView(LoginRequiredMixin, View):
     model = Message
-    template_name = 'inbox/message_form.html'
 
     def get(self, request, pk, *args, **kwargs):
         try:
@@ -34,6 +33,8 @@ class MessageFormView(LoginRequiredMixin, View):
             instance.sender = request.user
             instance.save()
             return HttpResponseRedirect('/inbox/')
+        else:
+            raise ValidationError('Pole {}')
     
     def get(self, request, *args, **kwargs):
         form = MessageForm(request.GET)
