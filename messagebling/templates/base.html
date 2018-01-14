@@ -4,10 +4,20 @@
     <head>
         <meta name="viewport", content="width=device-width initial-scale=1">
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.3/css/bootstrap.min.css" integrity="sha384-Zug+QiDoJOrZ5t4lssLdxGhVrurbmBWopoEl+M6BdEfwnCJZtKxi1KgxUyJq13dy" crossorigin="anonymous">
-        <link rel="stylesheet", href="{% static 'base.css' %}" />
-        <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+        <link rel="stylesheet", href="{% static 'inbox.css' %}"/>
+        <link rel="stylesheet" href="http://code.jquery.com/ui/1.9.0/themes/smoothness/jquery-ui.css" />
+        <script src="http://code.jquery.com/jquery-1.9.1.js"></script>
+        <script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.4/js/bootstrap-select.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.3/js/bootstrap.min.js" integrity="sha384-a5N7Y/aK3qNeh15eJKGWxsqtnX/wWdSZSKp+81YjTmS15nvnvxKHuzaWwXHDli+4" crossorigin="anonymous"></script>
+        <script>
+                $(document).ready(function(){
+                    $("#recivers").autocomplete({
+                        source: "/api/users/"
+                    });
+                });
+            </script>
     </head>
     <body>
         <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top is-fixed">
@@ -21,7 +31,7 @@
                         <a class="nav-link" href="{% url 'home' %}">Strona główna</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">Skrzynka odbiorcza</a>
+                        <a class="nav-link" href="{% url 'inbox' %}">Skrzynka odbiorcza</a>
                     </li>
                 </ul>
             </div>
@@ -31,8 +41,7 @@
         </header>
         <div class="container">
             <div class="row">
-                 
-                <div class ="col-lg-12 col-md-10 mx-auto">
+                 <div class ="col-lg-12 col-md-10 mx-auto">
                     {% block content %}{% endblock %}
                 </div>
             </div>
@@ -42,7 +51,7 @@
             <div class="container">
                 <div class="row">
                     <div class="col-lg-8 col-md-10 mx-auto">
-                        <p class="text-muted">COPYFLOPY</p>
+                        <p class="text-muted">Copyright</p>
                     </div>
                 </div>
             </div>

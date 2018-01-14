@@ -1,33 +1,71 @@
 {% extends 'base.html' %}
 {% block content %}
-<form method='post', action='/inbox/messages/'>
+{% if resend %}
+<form method='post', action='resend' enctype="multipart/form-data">
+{% else %}
+<form method='post', action='/inbox/messages/' enctype="multipart/form-data">
+{% endif %}
     {% csrf_token %}
-    <form>
+        {% if reply %}
         <div class="form-group row">
             <label for="subject" class="col-sm-2 col-form-label">Temat</label>
             <div class="col-sm-10">
-                <input name='subject' class="form-control" id="subject" placeholder="Temat">
+                <input  value="RE: {{reply.subject}}" name='subject' class="form-control" id="subject" placeholder="Temat" />
             </div>
         </div>
+        {% else %}
         <div class="form-group row">
-            <label for="receivers" class="col-sm-2 col-form-label">Odbiorcy</label>
+                <label for="subject" class="col-sm-2 col-form-label">Temat</label>
+                <div class="col-sm-10">
+                    <input name='subject' class="form-control" id="subject" placeholder="Temat" />
+                </div>
+            </div>
+        {% endif %}
+        {% if reply %}
+        <div class="form-group row">
+            <label for="recivers" class="col-sm-2 col-form-label">Odbiorca</label>
             <div class="col-sm-10">
-                <select name='recivers' class="form-control" id="receivers">
-                    {% for user in form.recivers %}
-                    <option>{{ user }} </option>
-                    {% endfor %}
-                </select>
+                <input value="{{reply.sender}}" placeholder="Odbiorca" type='text' name='recivers' class='form-control' id='recivers' disabled/>
             </div>
         </div>
+        {% else %}
+        <div class="form-group row">
+            <label for="recivers" class="col-sm-2 col-form-label">Odbiorca</label>
+            <div class="col-sm-10">
+                <input type='text' name='recivers' placeholder="Odbiorca" class='form-control' id='recivers'/>
+            </div>
+        </div>
+        {% endif %}
+        {% if resend %}
         <div class="form-group row">
             <label for="body" class="col-sm-2 col-form-label">Treść</label>
             <div class="col-sm-10">
-                <input name='body' class="form-control" id="body" placeholder="Treść">
+                <textarea type='text' name='body' class="form-control" id="body" placeholder="Treść">{{resend.body}}</textarea>
+            </div>
+        </div>
+        {% else %}
+        <div class="form-group row">
+            <label for="body" class="col-sm-2 col-form-label">Treść</label>
+            <div class="col-sm-10">
+                <textarea type='text' name='body' class="form-control" id="body" placeholder="Treść"></textarea>
+            </div>
+        </div>
+        {% endif %}
+        <div class="form-group row">
+            <label for="attachments" class="col-sm-2 col-form-label">Załączniki</label>
+            <div class="col-sm-10">
+                <input type='file', name='file_object' class="form-control" id="file_object" multiple/>
+                {% if resend %}
+                    <p>Dodane załączniki</p>
+                    {% for attach in attachment %}
+                    <a href="{{ attach.file_object.url}}">{{attach.file_object.name}} </a>
+                    {% endfor %}
+                {% endif %}
             </div>
         </div>
         <div class="form-group row">
             <div class="col-sm-10">
-                <button type="submit" class="btn btn-primary">Sign in</button>
+                <button type="submit" class="btn btn-primary">Wyślij</button>
             </div>
         </div>
     </form>
