@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+{% block content %}
+<form  method='post' action='/api/attachments/' enctype='multipart/form-data'>
+        {% csrf_token %}
+<div class="form-group row">
+        <label for="attachments" class="col-sm-2 col-form-label">Załączniki</label>
+        <div class="col-sm-10">
+            <input type='file' name='file_object' class="form-control" id="file_object" multiple/>
+            <button type='submit'>wyslij</button>
+        </div>
+</div>
+</form>
+{% endblock %}

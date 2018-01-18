@@ -1,0 +1,20 @@
+{% extends 'inbox/inbox.html' %}
+{% block content %}
+<div class='container'>
+    <div class="card">
+        <h5 class="card-header">Wiadomość od {{instance.sender}}</h5>
+        <div class="card-body">
+            <h5 class="card-title">{{instance.subject}}</h5>
+            <p id='body' class="card-text">{{instance.body}}</p>
+            <p>załączniki:</p>
+            {% for attach in attachment %}
+            <a href="{{ attach.file_object.url}}">{{attach.file_object.name}}</a>
+            {% endfor %}
+            <div class="col">
+            <a href="{{instance.pk}}/reply" class="btn btn-primary">Odpowiedz</a>
+            <a href="{{instance.pk}}/resend" class='btn btn-primary'>Prześlij dalej</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
