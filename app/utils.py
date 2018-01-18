@@ -5,7 +5,7 @@ from django.http import HttpResponse
 
 def serve_users(request):
     if request.is_ajax():
-        q = request.GET.get('term', '')
+        q = request.GET.get('q')
         users = User.objects.filter(username__contains=q)
         results = []
         for user in users:

@@ -21,7 +21,7 @@ class MessageView(LoginRequiredMixin, View):
         try:
             instance = self.model.objects.get(pk=pk)
             attachment = Attachment.objects.filter(message=instance)
-            if instance.sender == self.request.user or self.request.user in instance.recivers.all():
+            if instance.sender == self.request.user or instance.recivers == self.request.user:
                 return render(request, 'inbox/message_details.html', {'instance': instance,
                                                                       'attachment': attachment})
             return HttpResponseRedirect('/inbox/')
@@ -33,8 +33,9 @@ class MessageFormView(LoginRequiredMixin, View):
     def post(self, request, *args, **kwargs):
         asd = request.POST.copy()
         form = MessageForm(asd, request.FILES)
-        valid_user = User.objects.get(username=form.data['recivers'])
-        asd['recivers'] = valid_user.pk
+        users = []
+        print(asd)
+        print(form.data['recivers'])
         if form.is_valid():
             instance = form.save(commit=False)
             instance.sender = request.user
@@ -57,16 +58,19 @@ class MessageReplyView(MessageFormView):
         msg = Message.objects.get(pk=pk)
         attachment = Attachment.objects.filter(message=msg)
         form = MessageForm(request.GET)
-        return render(request, 'inbox/message_form.html', {'form': form, 'reply': msg, 'attachment': attachment})
-
+        if msg.sender == self.request.user or msg.recivers == self.request.user:
+            return render(request, 'inbox/message_form.html', {'form': form, 'reply': msg, 'attachment': attachment})
+        return HttpResponseRedirect('/inbox/')
 
 class MessageResendView(MessageFormView):
     def get(self, request, pk, *args, **kwargs):
         msg = Message.objects.get(pk=pk)
         attachment = Attachment.objects.filter(message=msg)
         form = MessageForm(request.GET)
-        return render(request, 'inbox/message_form.html', {'form': form, 'resend': msg, 'attachment': attachment})
-    
+        if msg.sender == self.request.user or msg.recivers == self.request.user:
+            return render(request, 'inbox/message_form.html', {'form': form, 'resend': msg, 'attachment': attachment})
+        return HttpResponseRedirect('/inbox/')
+
     def post(self, request, pk, *args, **kwargs):
         asd = request.POST.copy()
         form = MessageForm(asd, request.FILES)

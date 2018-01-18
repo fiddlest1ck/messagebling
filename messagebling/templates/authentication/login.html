@@ -15,7 +15,7 @@
             <div class='absolute-center row'>
                 <form class="form-signin" method="post" action="{% url 'login' %}">
                     {% csrf_token %}
-                    <input type="username" name="username" id="inputEmail" class="form-control" placeholder="Email address" required="" autofocus="">
+                    <input type="username" name="username" id="inputEmail" class="form-control" placeholder="Login" required="" autofocus="">
                     <input type="password" name="password" id="inputPassword", class="form-control" placeholder="Password" required="" autofocus="">
                     <button class="btn btn-lg btn-primary btn-block login-button-margin" type="submit">Sign in</button>
                 </form>

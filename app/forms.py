@@ -1,14 +1,15 @@
 from django import forms
+from django.contrib.auth.models import User
 from app.models import Attachment, Message
 
 
 class MessageForm(forms.ModelForm):
-    file_object = forms.FileField(required=False)
-
     class Meta:
         model = Message
         fields = ('subject', 'recivers', 'body',)
 
+    file_object = forms.FileField(required=False)
+    recivers = forms.ModelMultipleChoiceField(queryset=User.objects.all(), required=True)
 
 class AttachmentForm(forms.ModelForm):
     file_object = forms.FileField(required=False)

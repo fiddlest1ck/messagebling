@@ -27,13 +27,14 @@
             <div class="col-sm-10">
                 <input value="{{reply.sender}}" placeholder="Odbiorca" type='text' name='recivers' class='form-control' id='recivers' disabled/>
             </div>
-        </div>
+        </div>                
         {% else %}
         <div class="form-group row">
             <label for="recivers" class="col-sm-2 col-form-label">Odbiorca</label>
-            <div class="col-sm-10">
-                <input type='text' name='recivers' placeholder="Odbiorca" class='form-control' id='recivers'/>
-            </div>
+            <select id="recivers" class="form-control" name="recivers" multiple="multiple">
+                    <option value="AL">Alabama</option>
+                    <option value="WY">Wyoming</option>
+            </select>
         </div>
         {% endif %}
         {% if resend %}
