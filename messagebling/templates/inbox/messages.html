@@ -4,6 +4,12 @@
             <tr>
                 <td><a href={% url 'message' pk=message.pk %}>{{ message.subject }}</a></td>
                 <td><a href={% url 'message' pk=message.pk %}>{{ message.date_created}}</a></td>
+                {% if sent == True %}
+                    <td><a href={% url 'messagesenderdelete' pk=message.pk %} class='btn btn-primary'>Usuń</a></td>
+                {% else %}
+                    <td><a href={% url 'messagedelete' pk=message.pk %} class='btn btn-primary'>Usuń</a></td>
+                {% endif %}
+                
             </tr>
         </tbody>
     {% endfor %}

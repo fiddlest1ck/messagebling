@@ -11,8 +11,13 @@
             <a href="{{ attach.file_object.url}}">{{attach.file_object.name}}</a>
             {% endfor %}
             <div class="col">
-            <a href="{{instance.pk}}/reply" class="btn btn-primary">Odpowiedz</a>
+            <a href="{{instance.pk}}/reply" class="btn btn-primary">Odpowiedz do wszystkich</a>
             <a href="{{instance.pk}}/resend" class='btn btn-primary'>Prześlij dalej</a>
+            {% if sent == True %}
+            <a href={% url 'messagesenderdelete' pk=instance.pk %} class='btn btn-primary'>Usuń wiadomość</a>
+            {% else %}
+            <a href={% url 'messagedelete' pk=instance.pk %} class='btn btn-primary'>Usuń wiadomość</a>
+            {% endif %}
             </div>
         </div>
     </div>

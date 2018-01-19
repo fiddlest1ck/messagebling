@@ -7,6 +7,7 @@ class Message(models.Model):
     sender = models.ForeignKey('auth.User', on_delete='ignore', related_name='sender', null=True, blank=True)
     body = models.TextField()
     date_created = models.DateTimeField(auto_now_add=True)
+    delete_for_sender = models.BooleanField(default=False, blank=True)
 
 
 class Attachment(models.Model):

@@ -20,7 +20,8 @@ from django.conf.urls.static import static
 from django.conf import settings
 from app.utils import serve_users
 from app.views import (HomeView, InboxView, MessageView, MessageFormView,
-                       MessageReplyView, MessageResendView, UploadAttachmentView)
+                       MessageReplyView, MessageResendView, UploadAttachmentView,
+                       MessageDeleteView, SendMessageDeleteView)
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -32,6 +33,8 @@ urlpatterns = [
     path('inbox/messages/<int:pk>' , MessageView.as_view(), name='message'),
     path('inbox/messages/<int:pk>/reply', MessageReplyView.as_view(), name='messagereply'),
     path('inbox/messages/<int:pk>/resend', MessageResendView.as_view(), name='messageresend'),
+    path('inbox/message/<int:pk>/delete', MessageDeleteView.as_view(), name='messagedelete'),
+    path('inbox/message/<int:pk>/senderdelete', SendMessageDeleteView.as_view(), name='messagesenderdelete'),
     path('', HomeView.as_view(), name='home')
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 

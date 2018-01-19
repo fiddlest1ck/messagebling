@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect, get_object_or_404
 import json
 from django.views import View
 from django.views.generic import TemplateView, ListView, UpdateView
@@ -21,9 +21,15 @@ class MessageView(LoginRequiredMixin, View):
         try:
             instance = self.model.objects.get(pk=pk)
             attachment = Attachment.objects.filter(message=instance)
-            if instance.sender == self.request.user or instance.recivers == self.request.user:
+            if self.request.user in instance.recivers:
                 return render(request, 'inbox/message_details.html', {'instance': instance,
                                                                       'attachment': attachment})
+            elif instance.sender == self.request.user:
+                return render(request, 'inbox/message_details.html', {'instance': instance,
+                                                                      'attachment': attachment,
+                                                                      'sent': True})
+
+
             return HttpResponseRedirect('/inbox/')
         except:
             return HttpResponseRedirect('/inbox/')
@@ -32,14 +38,12 @@ class MessageView(LoginRequiredMixin, View):
 class MessageFormView(LoginRequiredMixin, View):
     def post(self, request, *args, **kwargs):
         asd = request.POST.copy()
-        form = MessageForm(asd, request.FILES)
-        users = []
-        print(asd)
-        print(form.data['recivers'])
+        form = MessageForm(request.POST, request.FILES)
         if form.is_valid():
             instance = form.save(commit=False)
             instance.sender = request.user
             instance.save()
+            form.save_m2m()
             if len(request.FILES.getlist('file_object')) > 0:
                 for a in request.FILES.getlist('file_object'):
                     attachment = Attachment.objects.create(file_object=a)
@@ -58,7 +62,7 @@ class MessageReplyView(MessageFormView):
         msg = Message.objects.get(pk=pk)
         attachment = Attachment.objects.filter(message=msg)
         form = MessageForm(request.GET)
-        if msg.sender == self.request.user or msg.recivers == self.request.user:
+        if msg.sender == self.request.user or self.request.user in msg.recivers:
             return render(request, 'inbox/message_form.html', {'form': form, 'reply': msg, 'attachment': attachment})
         return HttpResponseRedirect('/inbox/')
 
@@ -67,20 +71,19 @@ class MessageResendView(MessageFormView):
         msg = Message.objects.get(pk=pk)
         attachment = Attachment.objects.filter(message=msg)
         form = MessageForm(request.GET)
-        if msg.sender == self.request.user or msg.recivers == self.request.user:
+        if msg.sender == self.request.user or self.request.user in msg.recivers:
             return render(request, 'inbox/message_form.html', {'form': form, 'resend': msg, 'attachment': attachment})
         return HttpResponseRedirect('/inbox/')
 
     def post(self, request, pk, *args, **kwargs):
         asd = request.POST.copy()
         form = MessageForm(asd, request.FILES)
-        valid_user = User.objects.get(username=form.data['recivers'])
-        asd['recivers'] = valid_user.pk
         print(form.errors)
         if form.is_valid():
             instance = form.save(commit=False)
             instance.sender = request.user
             instance.save()
+            form.save_m2m()
             # new attachments
             for a in request.FILES.getlist('file_object'):
                 if a:
@@ -126,5 +129,24 @@ class InboxView(LoginRequiredMixin, ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['sent_messages'] = Message.objects.filter(sender=self.request.user)
+        context['sent_messages'] = Message.objects.filter(sender=self.request.user, delete_for_sender=False)
         return context
+
+
+class MessageDeleteView(LoginRequiredMixin, View):
+    template_name = 'inbox/inbox.html'
+    
+    def get(self, request, pk, *args, **kwargs):
+        message = get_object_or_404(Message, pk=pk)
+        message.recivers.remove(request.user.id)
+        return redirect('inbox')
+
+
+class SendMessageDeleteView(LoginRequiredMixin, View):
+    template_name = 'inbox/inbox.html'
+
+    def get(self, request, pk, *args, **kwargs):
+        message = get_object_or_404(Message, pk=pk)
+        message.delete_for_sender = True
+        message.save()
+        return redirect('inbox')
