@@ -1,0 +1,45 @@
+{% extends 'inbox/inbox.html' %}
+{% block messages %}
+<div class="row">
+    <div class="col">
+        <div class="pagination">
+            <span class="page-links">
+                {% if messages.has_previous %}
+                    <a href="sent?page={{ messages.previous_page_number }}">
+                        <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
+                    </a>
+                    <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
+                {% elif messages.has_next %}
+                    <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
+                    <a href="sent?page={{ messages.next_page_number }}">
+                        <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
+                    </a>
+                {% else %}
+                    <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
+                    <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
+                {% endif %}
+            </span>
+        </div>
+    </div>
+</div>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Temat</th>
+                        <th scope="col">Data</th>
+                        <th scope="col">Akcje</th>
+                    </tr>
+                </thead>
+            {% for message in messages %}
+                <tbody>
+                    <tr>
+                        <td>{{ forloop.counter }}</td>
+                        <td><a href={% url 'message' pk=message.pk %}>{{ message.subject }}</a></td>
+                        <td><a href={% url 'message' pk=message.pk %}>{{ message.date_created}}</a></td>
+                        <td><a href={% url 'messagesenderdelete' pk=message.pk %} class='btn btn-primary'>Usuń</a></td>
+                    </tr>
+                </tbody>
+            {% endfor %}
+        </table>
+{% endblock %}

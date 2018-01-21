@@ -18,15 +18,19 @@ from django.contrib.auth import views as auth_views
 from django.urls import path
 from django.conf.urls.static import static
 from django.conf import settings
-from app.utils import serve_users
-from app.views import (HomeView, InboxView, MessageView, MessageFormView,
+from app.utils import serve_users, count_notifications, delete_notifications, logout_view
+from app.views import (HomeView, InboxSentView, InboxRecivedView, MessageView, MessageFormView,
                        MessageReplyView, MessageResendView, UploadAttachmentView,
                        MessageDeleteView, SendMessageDeleteView)
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('login/', auth_views.LoginView.as_view(template_name='authentication/login.html'), name='login'),
-    path('inbox/', InboxView.as_view(), name='inbox'),
+    path('logout/', logout_view, name='logout'),
+    path('inbox/messages/sent', InboxSentView.as_view(), name='inboxsent'),
+    path('inbox/messages/recived', InboxRecivedView.as_view(), name='inboxrecived'),
+    path('api/notifications/', count_notifications, name='countnotifications'),
+    path('api/notifications/<int:pk>', delete_notifications, name='deletenotifications'),
     path('api/users/', serve_users, name='serveusers'),
     path('api/attachments/', UploadAttachmentView.as_view(), name='attachments'),
     path('inbox/messages/', MessageFormView.as_view(), name='messageform'),

@@ -6,17 +6,23 @@
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.3/css/bootstrap.min.css" integrity="sha384-Zug+QiDoJOrZ5t4lssLdxGhVrurbmBWopoEl+M6BdEfwnCJZtKxi1KgxUyJq13dy" crossorigin="anonymous">
         <link rel="stylesheet", href="{% static 'inbox.css' %}"/>
         <link rel="stylesheet" href="http://code.jquery.com/ui/1.9.0/themes/smoothness/jquery-ui.css" />
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
         <script src="http://code.jquery.com/jquery-1.9.1.js"></script>
         <script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/js/select2.min.js"></script>
         <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/css/select2.min.css" rel="stylesheet" />        
         <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.4/js/bootstrap-select.min.js"></script>
-        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.3/js/bootstrap.min.js" integrity="sha384-a5N7Y/aK3qNeh15eJKGWxsqtnX/wWdSZSKp+81YjTmS15nvnvxKHuzaWwXHDli+4" crossorigin="anonymous"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.3/js/bootstrap.min.js" integrity="sha384-a5N7Y/aK3qNeh15eJKGWxsqtnX/wWdSZSKp+81YjTmS15nvnvxKHuzaWwXHDli+4" crossorigin="anonymous"></script>
         <script>
                 $(document).ready(function() {
                     $('#recivers').select2({
                         ajax: {
+                            placeholder: {
+                                id: '-1', // the value of the option
+                                text: 'Select an option'
+                            },
                             url: "/api/users/",
                             dataType: 'json',
                             type: 'GET',
@@ -39,6 +45,32 @@
                             }   
                     });
                 });
+                $(document).ready(function( ) {
+                        $.ajax({
+                            url: "/api/notifications/",
+                            dataType: 'json',
+                            type: 'GET',
+                            success: function(response) {
+                                function myFunction(item, index) {
+                                    console.log(index);
+                                    $('#notifications-menu').append('<a class="dropdown-item" id="noti" href=' + "/inbox/messages/" + item[index].message_id + ">Nowa wiadomosc</a>");
+                                };
+                                if (response.count > 0) {
+                                    $('#notifications').text(response.count);
+                                    $('#notifications').attr('style', 'background-color: #d43f3a;');
+                                    response.notifications.forEach(myFunction);
+                                if (response.message_count > 0) {
+                                    $('#messages_count').text(response.message_count);
+                                    $('#messages_count').attr('style', 'background-color: #d43f3a;');
+                                    
+                                }    
+                                }
+                        }
+                    })
+                });
+                $('#file_object').change(function() {
+                    $('$filesuploader').addClass('alert-info')
+                });
             </script>
     </head>
     <body>
@@ -48,22 +80,43 @@
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav">
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'home' %}">Strona główna</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'inbox' %}">Skrzynka odbiorcza</a>
+                <ul class="nav navbar-nav navbar-right">
+                    <li class='nav-item dropdown'>
+                        <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
+                            <span class="glyphicon glyphicon glyphicon-user"></span>
+                        </a>
+                        <div class="dropdown-menu">
+                            <a class="dropdown-item"><b>{{user.username}}</b></a>
+                            <a class="dropdown-item" href="{% url 'logout' %}">Wyloguj się</a>
+                        </div>
                     </li>
                 </ul>
             </div>
         </nav>
-        <header style="margin-bottom: 50px; opacity:0.4; height: 200px; background-image: url('https://blackrockdigital.github.io/startbootstrap-clean-blog/img/home-bg.jpg')">
+        <header>
 
         </header>
         <div class="container">
             <div class="row">
-                 <div class ="col-lg-12 col-md-10 mx-auto">
+                <div class="col-sm-2 col-md-2">
+                    <div clas='row'>
+                        <a style='display: block' class='btn btn-danger' href="{% url 'messageform' %}">Nowa wiadomość</a>
+                    </div> 
+                    <div class='row'>
+                        <div class='col' style='margin-top: 20px'>
+                            <ul class='nav nav-pills nav-stacked'>
+                                <li>
+                                    <a href="{% url 'inboxrecived' %}">Odebrane<span class="badge pull-right" id='messages_count'>0</a></span>
+                                    
+                                </li>
+                                <li>
+                                    <a  href="{% url 'inboxsent' %}">Wysłane</a>
+                                </li>
+                            </ul>
+                        </div>    
+                    </div>
+                </div>
+                <div class ="col-sm-9 col-md-10">
                     {% block content %}{% endblock %}
                 </div>
             </div>
@@ -73,10 +126,10 @@
             <div class="container">
                 <div class="row">
                     <div class="col-lg-8 col-md-10 mx-auto">
-                        <p class="text-muted">Copyright</p>
+                        <p class="text-muted">Copyright SPWSzP w Radecznicy</p>
                     </div>
                 </div>
             </div>
         </footer>
-    </body> 
+    </body>    
 </html>

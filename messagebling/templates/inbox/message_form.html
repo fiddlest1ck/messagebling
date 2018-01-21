@@ -1,5 +1,10 @@
 {% extends 'base.html' %}
 {% block content %}
+{% if form.is_bound %}
+    <div class="alert alert-info" role="alert">
+        Wszystkie pola tekstowe są wymagane
+    </div>
+{% endif %}
 {% if resend %}
 <form method='post', action='resend' enctype="multipart/form-data">
 {% else %}
@@ -10,13 +15,13 @@
         <div class="form-group row">
             <label for="subject" class="col-sm-2 col-form-label">Temat</label>
             <div class="col-sm-10">
-                <input  value="RE: {{reply.subject}}" name='subject' class="form-control" id="subject" placeholder="Temat" />
+                <input  value="RE: {{reply.subject}}" name='subject' class="form-control" id="subject"  />
             </div>
         </div>
         <div class="form-group row">
             <label for="recivers" class="col-sm-2 col-form-label">Odbiorca</label>
             <div class="col-sm-10">
-                <select name='recivers' class='form-control' id='recivers' multiple='multiple' placeholder="Odbiorca">
+                <select name='recivers' class='form-control' id='recivers' multiple='multiple' >
                         <option selected="selected" value={{reply.sender.id}}>{{reply.sender}}</option>
                 </select>
                 
@@ -26,13 +31,13 @@
         <div class="form-group row">
                 <label for="subject" class="col-sm-2 col-form-label">Temat</label>
                 <div class="col-sm-10">
-                    <input name='subject' class="form-control" id="subject" placeholder="Temat" />
+                    <input name='subject' class="form-control" id="subject"  />
                 </div>
             </div>
             <div class="form-group row">
                 <label for="recivers" class="col-sm-2 col-form-label">Odbiorca</label>
                 <div class="col-sm-10">
-                    <select name='recivers' class='form-control' id='recivers' multiple='multiple' placeholder="Odbiorca">
+                    <select name='recivers' class='form-control' id='recivers' multiple='multiple' >
                         </select>
                 </div>
             </input>
@@ -42,21 +47,23 @@
         <div class="form-group row">
             <label for="body" class="col-sm-2 col-form-label">Treść</label>
             <div class="col-sm-10">
-                <textarea type='text' name='body' class="form-control" id="body" placeholder="Treść">{{resend.body}}</textarea>
+                <textarea type='text' name='body' class="form-control" id="body" >{{resend.body}}</textarea>
             </div>
         </div>
         {% else %}
         <div class="form-group row">
             <label for="body" class="col-sm-2 col-form-label">Treść</label>
             <div class="col-sm-10">
-                <textarea type='text' name='body' class="form-control" id="body" placeholder="Treść"></textarea>
+                <textarea type='text' name='body' class="form-control" id="body" ></textarea>
             </div>
         </div>
         {% endif %}
         <div class="form-group row">
             <label for="attachments" class="col-sm-2 col-form-label">Załączniki</label>
             <div class="col-sm-10">
-                <input type='file', name='file_object' class="form-control" id="file_object" multiple/>
+                <label id='filesuploader' class="btn btn-default"> Wybierz pliki
+                <input type='file' data-buttonText="Your label here." name='file_object' class="form-control" id="file_object" multiple hidden/>
+                </label>
                 {% if resend %}
                     <p>Dodane załączniki</p>
                     {% for attach in attachment %}
